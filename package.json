@@ -1,0 +1,16 @@
+{
+  "name": "learning-airflow",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:navarrotheus/learning-airflow.git",
+  "author": "Matheus Navarro <matheusnavarro@alu.ufc.br>",
+  "license": "MIT",
+  "scripts": {
+    "updatePokemons": "node src/index.js --unhandled-rejections=strict"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.6.2"
+  }
+}

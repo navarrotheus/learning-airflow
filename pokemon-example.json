@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "name": "bulbassauro",
+  "height": 11.0,
+  "weight": 12.0,
+  "abilities": ["super poder top", "golpe irado"],
+  "types": ["grass", "poison"]
+}
