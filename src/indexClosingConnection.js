@@ -2,7 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 const axios = require('axios');
 require('dotenv').config();
 
-const insertDocuments = function(db, collectionName, documents, callback) {
+function insertDocuments(db, collectionName, documents, callback) {
   const collection = db.collection(collectionName);
 
   collection.insertMany(documents, function(_, result) {
