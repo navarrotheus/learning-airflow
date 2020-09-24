@@ -6,7 +6,8 @@
   "author": "Matheus Navarro <matheusnavarro@alu.ufc.br>",
   "license": "MIT",
   "scripts": {
-    "updatePokemons": "node src/index.js --unhandled-rejections=strict"
+    "updatePokemons": "node src/index.js",
+    "updatePokemonsClosingConnection": "node src/indexClosingConnection.js"
   },
   "dependencies": {
     "axios": "^0.20.0",
