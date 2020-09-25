@@ -1,27 +1,30 @@
 const { MongoClient } = require('mongodb');
 const axios = require('axios');
 require('dotenv').config();
+const url = require('url');
 
-async function dbConnection(uri, dbName) {
+// Conexao com o banco
+async function dbConnection(uri) {
   const client = await MongoClient.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
 
+  const dbName = url.parse(uri).pathname.substr(1);
+
   const db = client.db(dbName);
 
-  return db;
+  return { db, client };
 }
 
-async function script()  {
+// Pega os pokemons da api e monta da forma que queremos
+async function getPokemons() {
   let { data } = await axios.get('https://pokeapi.co/api/v2/pokemon');
-  
-  const db = await dbConnection(process.env.MONGO_URI, process.env.MONGO_DB);
 
-  const collection = db.collection('pokemons');
+  const pokemons = [];
 
   let count = 0;
-
+  
   while (!!data.next && count !== 10) {
     data.results.forEach(async pokemon => {
       const { data: pokemonData } = await axios.get(pokemon.url);
@@ -31,7 +34,7 @@ async function script()  {
       const mappedTypes = types.map(item => item.type.name);
 
       const newPokemon = {
-        id,
+        _id: id,
         name,
         height,
         weight,
@@ -39,14 +42,26 @@ async function script()  {
         types: mappedTypes
       };
       
-      await collection.insertOne(newPokemon);
+      pokemons.push(newPokemon);
     });
 
     const response = await axios.get(data.next);
     data = response.data;
-
     console.log(count++);
   }
+
+  return pokemons;
+}
+
+// Utiliza as funcoes anteriores para alimentar o banco
+async function script()  {
+  const { db, client } = await dbConnection(process.env.MONGO_URI);
+
+  const collection = db.collection('pokemons');
+
+  const pokemons = await getPokemons();
+
+  collection.insertMany(pokemons, () => client.close());
 }
 
 script();
